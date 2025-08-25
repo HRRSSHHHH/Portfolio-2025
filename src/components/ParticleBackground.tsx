@@ -8,8 +8,8 @@ import profilePicture from '../assets/images/Profile Picture-2.png';
 
 const ParticleBackground: React.FC = () => {
     const mountRef = useRef<HTMLDivElement>(null);
-    const groupRef = useRef<THREE.Group>();
-    const animationFrameIdRef = useRef<number>();
+    const groupRef = useRef<THREE.Group | null>(null);
+    const animationFrameIdRef = useRef<number | undefined>(undefined);
 
     useEffect(() => {
         let isMounted = true;
