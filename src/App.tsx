@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -32,10 +32,8 @@ function App() {
   return (
     <div className="App">
       <ParticleBackground />
-      <div style={{ height: '200vh', background: '#1a1a1a', color: 'white', textAlign: 'center', paddingTop: '50px' }}>
-        <h1>Scroll Down</h1>
-        <p>This is placeholder content to create a scrollable area.</p>
-      </div>
+      <div style={{ height: '200vh' }}></div>
+      
     </div>
   );
 }
