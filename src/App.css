@@ -1,0 +1,18 @@
+.App {
+  position: relative;
+  width: 100%;
+}
+
+.App-header {
+  position: relative;
+  z-index: 1; /* Ensure header is above the background */
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background for readability */
+  border-radius: 10px;
+}
+
+body {
+  margin: 0;
+  background-color: #e0e0e0; /* Match the Three.js clear color */
+}
