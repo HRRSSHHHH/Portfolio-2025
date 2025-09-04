@@ -70,8 +70,9 @@ const ParticleBackground: React.FC = () => {
             const colors: number[] = [];
             const scale = 0.7, depth = 15, brightnessThreshold = 80;
 
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
+            const samplingFactor = 2; // Sample every 2nd pixel in x and y
+            for (let y = 0; y < height; y += samplingFactor) {
+                for (let x = 0; x < width; x += samplingFactor) {
                     const i = (y * width + x) * 4;
                     const brightness = 0.299 * imageData[i] + 0.587 * imageData[i+1] + 0.114 * imageData[i+2];
                     if (imageData[i+3] > 128 && brightness < brightnessThreshold) {
