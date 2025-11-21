@@ -35,8 +35,12 @@ const ParticleBackground: React.FC = () => {
         controls.enableDamping = true;
         controls.enableZoom = false;
 
+        // Animation state
+        const formationProgress = { value: 0 };
+        let initialPositions: Float32Array;
+
         const loader = new THREE.TextureLoader();
-        loader.load(profilePicture, 
+        loader.load(profilePicture,
             (texture) => {
                 if (!isMounted) return;
                 createParticlesFromImage(texture.image);
@@ -74,10 +78,10 @@ const ParticleBackground: React.FC = () => {
             for (let y = 0; y < height; y += samplingFactor) {
                 for (let x = 0; x < width; x += samplingFactor) {
                     const i = (y * width + x) * 4;
-                    const brightness = 0.299 * imageData[i] + 0.587 * imageData[i+1] + 0.114 * imageData[i+2];
-                    if (imageData[i+3] > 128 && brightness < brightnessThreshold) {
+                    const brightness = 0.299 * imageData[i] + 0.587 * imageData[i + 1] + 0.114 * imageData[i + 2];
+                    if (imageData[i + 3] > 128 && brightness < brightnessThreshold) {
                         if (Math.random() < 0.1) continue;
-                        positions.push((x - width/2)*scale, -(y-height/2)*scale, (Math.random()-0.5)*depth);
+                        positions.push((x - width / 2) * scale, -(y - height / 2) * scale, (Math.random() - 0.5) * depth);
                         const darkColor = new THREE.Color(0x222222);
                         const lightColor = new THREE.Color(0x888888);
                         if (Math.random() < 0.3) {
@@ -91,28 +95,44 @@ const ParticleBackground: React.FC = () => {
 
             if (positions.length === 0) return;
 
+            // Initialize random starting positions for formation animation
+            initialPositions = new Float32Array(positions.length);
+            for (let i = 0; i < positions.length; i += 3) {
+                initialPositions[i] = (Math.random() - 0.5) * 500;     // Random X
+                initialPositions[i + 1] = (Math.random() - 0.5) * 500;   // Random Y
+                initialPositions[i + 2] = (Math.random() - 0.5) * 500;   // Random Z
+            }
+
+            // Animate formation
+            gsap.to(formationProgress, {
+                value: 1,
+                duration: 2.5,
+                delay: 0.5, // Wait for pixel transition to clear a bit
+                ease: "power3.out"
+            });
+
             geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
             geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
 
             const triangleVertices: number[] = [];
             const triangleAmplitude = 2;
             for (let i = 0; i < positions.length; i += 3) {
-                const ox = positions[i], oy = positions[i+1], oz = positions[i+2];
+                const ox = positions[i], oy = positions[i + 1], oz = positions[i + 2];
                 triangleVertices.push(ox, oy, oz);
                 triangleVertices.push(ox + triangleAmplitude, oy, oz + triangleAmplitude * 0.5);
                 triangleVertices.push(ox + triangleAmplitude * 0.5, oy + triangleAmplitude, oz - triangleAmplitude * 0.5);
             }
             geometry.setAttribute('triangleVertices', new THREE.Float32BufferAttribute(triangleVertices, 9));
-            geometry.setAttribute('currentSegment', new THREE.Float32BufferAttribute(Array.from({length: positions.length / 3}, () => Math.floor(Math.random() * 3)), 1));
-            geometry.setAttribute('segmentProgress', new THREE.Float32BufferAttribute(Array.from({length: positions.length / 3}, () => Math.random()), 1));
+            geometry.setAttribute('currentSegment', new THREE.Float32BufferAttribute(Array.from({ length: positions.length / 3 }, () => Math.floor(Math.random() * 3)), 1));
+            geometry.setAttribute('segmentProgress', new THREE.Float32BufferAttribute(Array.from({ length: positions.length / 3 }, () => Math.random()), 1));
 
             const hexagonTexture = createHexagonTexture();
-            const pointsMaterial = new THREE.PointsMaterial({ 
-                size: 1.2, 
+            const pointsMaterial = new THREE.PointsMaterial({
+                size: 1.2,
                 vertexColors: true,
                 map: hexagonTexture,
                 transparent: true,
-                alphaTest: 0.1 
+                alphaTest: 0.1
             });
 
             const points = new THREE.Points(geometry, pointsMaterial);
@@ -178,7 +198,7 @@ const ParticleBackground: React.FC = () => {
             canvas.height = 64;
             const context = canvas.getContext('2d');
             if (!context) return new THREE.Texture();
-            
+
             context.fillStyle = 'white';
             context.beginPath();
             const size = 30;
@@ -190,7 +210,7 @@ const ParticleBackground: React.FC = () => {
             }
             context.closePath();
             context.fill();
-            
+
             return new THREE.CanvasTexture(canvas);
         }
 
@@ -205,14 +225,14 @@ const ParticleBackground: React.FC = () => {
             });
 
             tl.to(group.rotation, { y: Math.PI * 2 })
-              .to(group.scale, { x: 0.5, y: 0.5, z: 0.5 })
-              .to(group.position, { x: 100, y: -100 });
+                .to(group.scale, { x: 0.5, y: 0.5, z: 0.5 })
+                .to(group.position, { x: 100, y: -100 });
         }
 
         const clock = new THREE.Clock();
         const animate = () => {
             animationFrameIdRef.current = requestAnimationFrame(animate);
-            
+
             const time = clock.getElapsedTime();
             const group = groupRef.current;
 
@@ -243,9 +263,25 @@ const ParticleBackground: React.FC = () => {
                         else if (seg === 1) { startX = v2x; startY = v2y; startZ = v2z; endX = v3x; endY = v3y; endZ = v3z; }
                         else { startX = v3x; startY = v3y; startZ = v3z; endX = v1x; endY = v1y; endZ = v1z; }
 
-                        positions[p_idx] = startX + (endX - startX) * prog;
-                        positions[p_idx + 1] = startY + (endY - startY) * prog;
-                        positions[p_idx + 2] = startZ + (endZ - startZ) * prog;
+                        // Calculate target position based on triangle path
+                        const targetX = startX + (endX - startX) * prog;
+                        const targetY = startY + (endY - startY) * prog;
+                        const targetZ = startZ + (endZ - startZ) * prog;
+
+                        // Interpolate between initial random position and target position
+                        if (initialPositions) {
+                            const initX = initialPositions[p_idx];
+                            const initY = initialPositions[p_idx + 1];
+                            const initZ = initialPositions[p_idx + 2];
+
+                            positions[p_idx] = initX + (targetX - initX) * formationProgress.value;
+                            positions[p_idx + 1] = initY + (targetY - initY) * formationProgress.value;
+                            positions[p_idx + 2] = initZ + (targetZ - initZ) * formationProgress.value;
+                        } else {
+                            positions[p_idx] = targetX;
+                            positions[p_idx + 1] = targetY;
+                            positions[p_idx + 2] = targetZ;
+                        }
 
                         prog += segmentSpeed;
                         if (prog >= 1.0) {
@@ -260,9 +296,9 @@ const ParticleBackground: React.FC = () => {
                     const plexusPos = plexusLines.geometry.attributes.position.array as Float32Array;
                     const connections = plexusLines.userData.connections;
                     for (let i = 0, j = 0; i < connections.length; i += 2, j += 6) {
-                        const p1 = connections[i] * 3, p2 = connections[i+1] * 3;
-                        plexusPos[j] = positions[p1]; plexusPos[j+1] = positions[p1+1]; plexusPos[j+2] = positions[p1+2];
-                        plexusPos[j+3] = positions[p2]; plexusPos[j+4] = positions[p2+1]; plexusPos[j+5] = positions[p2+2];
+                        const p1 = connections[i] * 3, p2 = connections[i + 1] * 3;
+                        plexusPos[j] = positions[p1]; plexusPos[j + 1] = positions[p1 + 1]; plexusPos[j + 2] = positions[p1 + 2];
+                        plexusPos[j + 3] = positions[p2]; plexusPos[j + 4] = positions[p2 + 1]; plexusPos[j + 5] = positions[p2 + 2];
                     }
                     plexusLines.geometry.attributes.position.needsUpdate = true;
 
@@ -270,17 +306,17 @@ const ParticleBackground: React.FC = () => {
                     const emitters = emergingLines.userData.emitters;
                     for (let i = 0, j = 0; i < emitters.length; i++, j += 6) {
                         const p1_idx = emitters[i] * 3;
-                        const p1 = new THREE.Vector3(positions[p1_idx], positions[p1_idx+1], positions[p1_idx+2]);
-                        
-                        if (p1.lengthSq() === 0) continue; 
+                        const p1 = new THREE.Vector3(positions[p1_idx], positions[p1_idx + 1], positions[p1_idx + 2]);
+
+                        if (p1.lengthSq() === 0) continue;
 
                         const dir = p1.clone().normalize();
                         const len = 50 + 50 * Math.sin(time * 3 + p1.x);
                         const p2 = p1.clone().add(dir.multiplyScalar(len));
-                        emergingPos[j] = p1.x; emergingPos[j+1] = p1.y; emergingPos[j+2] = p1.z;
-                        emergingPos[j+3] = p2.x; emergingPos[j+4] = p2.y; emergingPos[j+5] = p2.z;
-                }
-                emergingLines.geometry.attributes.position.needsUpdate = true;
+                        emergingPos[j] = p1.x; emergingPos[j + 1] = p1.y; emergingPos[j + 2] = p1.z;
+                        emergingPos[j + 3] = p2.x; emergingPos[j + 4] = p2.y; emergingPos[j + 5] = p2.z;
+                    }
+                    emergingLines.geometry.attributes.position.needsUpdate = true;
                 }
             }
 
