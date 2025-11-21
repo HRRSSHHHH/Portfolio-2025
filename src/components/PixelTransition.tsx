@@ -44,7 +44,6 @@ export default function PixelTransition({
 
         let animationFrameId: number;
         const startTime = performance.now();
-        const duration = 1000; // 1 second total duration
 
         const render = (time: number) => {
             const elapsed = time - startTime;
