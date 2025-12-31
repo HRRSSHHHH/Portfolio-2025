@@ -1,8 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/Portfolio-2025/' : '/',
+export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
@@ -15,4 +14,4 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-}))
+})
