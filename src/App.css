@@ -3,16 +3,21 @@
   width: 100%;
 }
 
-.App-header {
-  position: relative;
-  z-index: 1; /* Ensure header is above the background */
-  text-align: center;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background for readability */
-  border-radius: 10px;
-}
+/* Removed unused .App-header */
 
 body {
   margin: 0;
-  background-color: #e0e0e0; /* Match the Three.js clear color */
+  background-color: #e0e0e0;
+  /* Match the Three.js clear color */
+}
+
+/* Text Stroke Utility */
+.transparent-text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+  color: transparent;
+}
+
+.transparent-text-stroke:hover {
+  -webkit-text-stroke: 1px #2d936c;
+  color: #2d936c;
 }
