@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'De Valencia';
-  src: url('/fonts/de-valencia-beta.otf') format('opentype');
+  src: url('./assets/fonts/de-valencia-beta.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10,7 +10,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Regular.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -18,7 +18,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Medium.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -26,7 +26,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-SemiBold.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -34,7 +34,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Bold.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -42,7 +42,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-ExtraBold.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-ExtraBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -50,7 +50,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Black.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -58,7 +58,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Light.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -66,7 +66,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-ExtraLight.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-ExtraLight.ttf') format('truetype');
   font-weight: 200;
   font-style: normal;
   font-display: swap;
@@ -74,7 +74,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Thin.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Thin.ttf') format('truetype');
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -83,7 +83,7 @@
 /* Italic variants */
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-Italic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-Italic.ttf') format('truetype');
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -91,7 +91,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-MediumItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-MediumItalic.ttf') format('truetype');
   font-weight: 500;
   font-style: italic;
   font-display: swap;
@@ -99,7 +99,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-SemiBoldItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-SemiBoldItalic.ttf') format('truetype');
   font-weight: 600;
   font-style: italic;
   font-display: swap;
@@ -107,7 +107,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-BoldItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-BoldItalic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;
   font-display: swap;
@@ -115,7 +115,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-ExtraBoldItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-ExtraBoldItalic.ttf') format('truetype');
   font-weight: 800;
   font-style: italic;
   font-display: swap;
@@ -123,7 +123,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-BlackItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-BlackItalic.ttf') format('truetype');
   font-weight: 900;
   font-style: italic;
   font-display: swap;
@@ -131,7 +131,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-LightItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-LightItalic.ttf') format('truetype');
   font-weight: 300;
   font-style: italic;
   font-display: swap;
@@ -139,7 +139,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-ExtraLightItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-ExtraLightItalic.ttf') format('truetype');
   font-weight: 200;
   font-style: italic;
   font-display: swap;
@@ -147,7 +147,7 @@
 
 @font-face {
   font-family: 'Montserrat Alternates';
-  src: url('/fonts/MontserratAlternates-ThinItalic.ttf') format('truetype');
+  src: url('./assets/fonts/MontserratAlternates-ThinItalic.ttf') format('truetype');
   font-weight: 100;
   font-style: italic;
   font-display: swap;
