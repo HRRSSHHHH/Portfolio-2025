@@ -7,6 +7,7 @@ import Hero from './Hero';
 import TechStackMarquee from './TechStackMarquee';
 
 export default function Home() {
+  console.log("Home: Mounting");
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (

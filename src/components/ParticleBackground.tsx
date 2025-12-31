@@ -12,6 +12,7 @@ interface ParticleBackgroundProps {
 }
 
 const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef }) => {
+    console.log("ParticleBackground: Mounting");
     const mountRef = useRef<HTMLDivElement>(null);
     const groupRef = useRef<THREE.Group | null>(null);
     const animationFrameIdRef = useRef<number | undefined>(undefined);
@@ -80,6 +81,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
             if (groupRef.current) {
                 setupScrollAnimation(groupRef.current);
             }
+            console.log("ParticleBackground: Animation started");
             animate();
         }).catch(err => {
             console.error("Error loading profile images:", err);
