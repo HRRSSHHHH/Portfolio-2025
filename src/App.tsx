@@ -7,11 +7,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import PixelTransition from './components/PixelTransition';
+import ParticleTransition from './components/ParticleTransition';
 import './App.css';
 
 const Home = lazy(() => import('./components/Home'));
 const Projects = lazy(() => import('./components/Projects'));
+const Skills = lazy(() => import('./components/Skills'));
+const Resume = lazy(() => import('./components/Resume'));
+const About = lazy(() => import('./components/About'));
+const Contact = lazy(() => import('./components/Contact'));
+const Auro = lazy(() => import('./components/case-studies/Auro'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,26 +56,71 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <main className="pt-24">
+      <main>
         <AnimatePresence mode="wait">
           <Suspense fallback={<div className="fixed inset-0 bg-[#2d936c] z-[50]" />}>
             <Routes location={location} key={location.pathname}>
               <Route
                 path="/"
                 element={
-                  <PixelTransition>
+                  <ParticleTransition>
                     <Home />
                     <Footer />
-                  </PixelTransition>
+                  </ParticleTransition>
                 }
               />
               <Route
                 path="/projects"
                 element={
-                  <PixelTransition>
+                  <ParticleTransition>
                     <Projects />
                     <Footer />
-                  </PixelTransition>
+                  </ParticleTransition>
+                }
+              />
+              <Route
+                path="/skills"
+                element={
+                  <ParticleTransition>
+                    <Skills />
+                    <Footer />
+                  </ParticleTransition>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <ParticleTransition>
+                    <About />
+                    <Footer />
+                  </ParticleTransition>
+                }
+              />
+              <Route
+                path="/resume"
+                element={
+                  <ParticleTransition>
+                    <Resume />
+                    <Footer />
+                  </ParticleTransition>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <ParticleTransition>
+                    <Contact />
+                    <Footer />
+                  </ParticleTransition>
+                }
+              />
+              <Route
+                path="/project/auro"
+                element={
+                  <ParticleTransition>
+                    <Auro />
+                    <Footer />
+                  </ParticleTransition>
                 }
               />
             </Routes>
