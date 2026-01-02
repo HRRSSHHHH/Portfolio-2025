@@ -12,9 +12,11 @@ interface ParticleBackgroundProps {
 }
 
 const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef }) => {
-    console.log("ParticleBackground: Mounting");
+    console.log("ParticleBackground: Rendering");
     const mountRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
     const groupRef = useRef<THREE.Group | null>(null);
+    const controlsRef = useRef<OrbitControls | null>(null);
     const animationFrameIdRef = useRef<number | undefined>(undefined);
 
     // Mouse interaction state
@@ -48,7 +50,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         gsap.registerPlugin(ScrollTrigger);
 
         // [MOBILE OPTIMIZATION]
-        const isMobile = window.innerWidth < 768;
+        // isMobile check is now handled via state at the top level
 
         const initialWidth = mountPoint.clientWidth;
         const initialHeight = mountPoint.clientHeight;
@@ -57,15 +59,33 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         const camera = new THREE.PerspectiveCamera(75, initialWidth / initialHeight, 0.1, 1000);
         camera.position.z = 180;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(initialWidth, initialHeight);
         renderer.setClearColor(0xe0e0e0);
+
+        // Explicitly handle touch-action to ensure scrolling works on mobile
+        if (isMobile) {
+            renderer.domElement.style.touchAction = 'pan-y';
+            renderer.domElement.style.pointerEvents = 'none';
+        } else {
+            renderer.domElement.style.touchAction = 'none';
+            renderer.domElement.style.pointerEvents = 'auto';
+        }
+
         mountPoint.appendChild(renderer.domElement);
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.enableZoom = false;
+        if (!isMobile) {
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.enableZoom = false;
+            controlsRef.current = controls;
+        } else {
+            if (controlsRef.current) {
+                controlsRef.current.dispose();
+                controlsRef.current = null;
+            }
+        }
 
         const onMouseMove = (event: MouseEvent) => {
             if (!isMobile) { // Disable mouse tracking on mobile
@@ -487,7 +507,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
                     points.geometry.attributes.position.needsUpdate = true;
                     points.geometry.attributes.color.needsUpdate = true; // IMPORTANT: Colors update needed for fade
 
-                    controls.update();
+                    if (controlsRef.current) controlsRef.current.update();
 
                     // Calculate Mouse Interaction Target (or Dummy)
                     let tMX = 99999, tMY = 99999, tMZ = 99999;
@@ -674,9 +694,14 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
 
         const onWindowResize = () => {
             if (!mountPoint) return;
-            camera.aspect = mountPoint.clientWidth / mountPoint.clientHeight;
+            const width = mountPoint.clientWidth;
+            const height = mountPoint.clientHeight;
+
+            setIsMobile(window.innerWidth < 768);
+
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(mountPoint.clientWidth, mountPoint.clientHeight);
+            renderer.setSize(width, height);
         };
         window.addEventListener('resize', onWindowResize);
 
@@ -690,12 +715,15 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
             ScrollTrigger.killAll();
             if (mountPoint) mountPoint.removeChild(renderer.domElement);
             renderer.dispose();
-            controls.dispose();
+            if (controlsRef.current) {
+                controlsRef.current.dispose();
+                controlsRef.current = null;
+            }
             scene.clear();
         };
-    }, []);
+    }, [isMobile]); // Re-run effect when isMobile changes to toggle controls and styles correctly
 
-    return <div ref={mountRef} className="absolute inset-0 w-full h-full" />;
+    return <div ref={mountRef} className={`absolute inset-0 w-full h-full ${isMobile ? 'pointer-events-none' : ''}`} />;
 };
 
 export default ParticleBackground;
