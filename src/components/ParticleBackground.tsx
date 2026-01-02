@@ -12,8 +12,9 @@ interface ParticleBackgroundProps {
 }
 
 const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef }) => {
-    console.log("ParticleBackground: Mounting");
+    console.log("ParticleBackground: Rendering");
     const mountRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
     const groupRef = useRef<THREE.Group | null>(null);
     const animationFrameIdRef = useRef<number | undefined>(undefined);
 
@@ -48,7 +49,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         gsap.registerPlugin(ScrollTrigger);
 
         // [MOBILE OPTIMIZATION]
-        const isMobile = window.innerWidth < 768;
+        // isMobile check is now handled via state at the top level
 
         const initialWidth = mountPoint.clientWidth;
         const initialHeight = mountPoint.clientHeight;
@@ -57,10 +58,20 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         const camera = new THREE.PerspectiveCamera(75, initialWidth / initialHeight, 0.1, 1000);
         camera.position.z = 180;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(initialWidth, initialHeight);
         renderer.setClearColor(0xe0e0e0);
+
+        // Explicitly handle touch-action to ensure scrolling works on mobile
+        if (isMobile) {
+            renderer.domElement.style.touchAction = 'pan-y';
+            renderer.domElement.style.pointerEvents = 'none';
+        } else {
+            renderer.domElement.style.touchAction = 'none';
+            renderer.domElement.style.pointerEvents = 'auto';
+        }
+
         mountPoint.appendChild(renderer.domElement);
 
         let controls: OrbitControls | null = null;
@@ -677,9 +688,14 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
 
         const onWindowResize = () => {
             if (!mountPoint) return;
-            camera.aspect = mountPoint.clientWidth / mountPoint.clientHeight;
+            const width = mountPoint.clientWidth;
+            const height = mountPoint.clientHeight;
+
+            setIsMobile(window.innerWidth < 768);
+
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(mountPoint.clientWidth, mountPoint.clientHeight);
+            renderer.setSize(width, height);
         };
         window.addEventListener('resize', onWindowResize);
 
@@ -698,7 +714,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         };
     }, []);
 
-    return <div ref={mountRef} className={`absolute inset-0 w-full h-full ${window.innerWidth < 768 ? 'pointer-events-none' : ''}`} />;
+    return <div ref={mountRef} className={`absolute inset-0 w-full h-full ${isMobile ? 'pointer-events-none' : ''}`} />;
 };
 
 export default ParticleBackground;
