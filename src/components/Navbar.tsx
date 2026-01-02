@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, AnimatePresence, type Variants } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
 gsap.registerPlugin(SplitText);
 
@@ -17,25 +18,45 @@ const navLinks = [
 export default function Navbar() {
     const navItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
     const [hidden, setHidden] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { pathname } = useLocation();
 
     const { scrollY } = useScroll();
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() ?? 0;
-        if (latest > previous && latest > 150) {
+        // Hide on scroll down, show on scroll up. Always show if menu is open.
+        if (latest > previous && latest > 150 && !isMenuOpen) {
             setHidden(true);
         } else {
             setHidden(false);
         }
     });
 
-    // Effect for SplitText animation and hover
+    // Close menu on route change
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [pathname]);
+
+    // Prevent body scroll when menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+            // Ensure hidden state is reset when menu closes so navbar comes back
+            setHidden(false);
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMenuOpen]);
+
+    // Effect for SplitText animation (Desktop)
     useEffect(() => {
         const glitchTimelines: gsap.core.Timeline[] = [];
         const cleanups: (() => void)[] = [];
         let isMounted = true;
-
-        // Check for reduced motion preference
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         document.fonts.ready.then(() => {
@@ -48,15 +69,13 @@ export default function Navbar() {
                         const split = new SplitText(textElement, { type: 'chars' });
 
                         if (prefersReducedMotion) {
-                            // Simple fade in for reduced motion
                             gsap.to(split.chars, { opacity: 1, duration: 0.5, stagger: 0.05 });
                             return;
                         }
 
-                        gsap.set(split.chars, { opacity: 0 }); // Initially hide characters
+                        gsap.set(split.chars, { opacity: 0 });
 
                         const tl = gsap.timeline({ paused: true });
-
                         tl.from(split.chars, {
                             duration: 0.05,
                             opacity: 0,
@@ -66,47 +85,31 @@ export default function Navbar() {
                             scale: () => gsap.utils.random(0.9, 1.1),
                             filter: 'blur(20px)',
                             ease: 'power2.inOut',
-                            stagger: {
-                                each: 0.015,
-                                from: 'random',
-                            },
+                            stagger: { each: 0.015, from: 'random' },
                             repeat: 1,
                             yoyo: true,
-                        })
-                            .to(split.chars, {
-                                duration: 0.4,
-                                opacity: 1,
-                                x: 0,
-                                y: 0,
-                                rotation: 0,
-                                scale: 1,
-                                filter: 'blur(0px)',
-                                ease: 'elastic.out(1, 0.7)',
-                                stagger: {
-                                    each: 0.03,
-                                    from: 'random',
-                                },
-                            });
+                        }).to(split.chars, {
+                            duration: 0.4,
+                            opacity: 1,
+                            x: 0,
+                            y: 0,
+                            rotation: 0,
+                            scale: 1,
+                            filter: 'blur(0px)',
+                            ease: 'elastic.out(1, 0.7)',
+                            stagger: { each: 0.03, from: 'random' },
+                        });
 
-                        glitchTimelines[index] = tl; // Store the timeline
-
-                        // Initial animation on load
+                        glitchTimelines[index] = tl;
                         const initialDelay = 1.0 + (0.3 * index);
                         gsap.to(tl, { time: tl.duration(), delay: initialDelay, onComplete: () => { tl.pause(); } });
 
-                        const enterListener = () => {
-                            if (!tl.isActive()) {
-                                tl.restart();
-                            }
-                        };
-                        const leaveListener = () => {
-                            // Optional reverse logic
-                        };
+                        const enterListener = () => { if (!tl.isActive()) tl.restart(); };
+                        const leaveListener = () => { };
 
                         item.addEventListener('mouseenter', enterListener);
                         item.addEventListener('mouseleave', leaveListener);
 
-                        // Push cleanup for this item
                         cleanups.push(() => {
                             item.removeEventListener('mouseenter', enterListener);
                             item.removeEventListener('mouseleave', leaveListener);
@@ -119,10 +122,10 @@ export default function Navbar() {
 
         return () => {
             isMounted = false;
-            glitchTimelines.forEach(tl => tl.kill()); // Kill all timelines on unmount
+            glitchTimelines.forEach(tl => tl.kill());
             cleanups.forEach(cleanup => cleanup());
         };
-    }, [navLinks]);
+    }, []);
 
     const underlineRef = useRef<HTMLDivElement | null>(null);
 
@@ -131,13 +134,11 @@ export default function Navbar() {
         const underline = underlineRef.current;
 
         if (underline && target) {
-            // Get position relative to the container
             const containerRect = target.parentElement?.getBoundingClientRect();
             const itemRect = target.getBoundingClientRect();
 
             if (containerRect) {
                 const left = itemRect.left - containerRect.left;
-
                 gsap.to(underline, {
                     x: left,
                     width: itemRect.width,
@@ -162,6 +163,83 @@ export default function Navbar() {
         }
     };
 
+    // --- REFINED ANIMATION VARIANTS ---
+
+    // Menu Overlay: Spring Physics for fluidity
+    const menuVariants: Variants = {
+        closed: {
+            y: "-100%",
+            borderBottomLeftRadius: "50%",
+            borderBottomRightRadius: "50%",
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 40,
+                staggerChildren: 0.05,
+                staggerDirection: -1,
+                when: "afterChildren"
+            }
+        },
+        open: {
+            y: "0%",
+            borderBottomLeftRadius: "0%",
+            borderBottomRightRadius: "0%",
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                staggerChildren: 0.07,
+                delayChildren: 0.2,
+                when: "beforeChildren"
+            }
+        }
+    };
+
+    // Text Reveal Container: Clip path for the reveal effect
+    const linkContainerVariants: Variants = {
+        closed: {
+            transition: {
+                staggerChildren: 0.05,
+                staggerDirection: -1
+            }
+        },
+        open: {
+            transition: {
+                staggerChildren: 0.07,
+                delayChildren: 0.2
+            }
+        }
+    };
+
+    // The Text itself: Slides up from 100%
+    const linkVariants: Variants = {
+        closed: {
+            y: "120%",
+            transition: {
+                type: "tween",
+                ease: "easeInOut",
+                duration: 0.3
+            }
+        },
+        open: {
+            y: "0%",
+            transition: {
+                type: "spring",
+                stiffness: 500,
+                damping: 30
+            }
+        }
+    };
+
+    const systemTextVariants: Variants = {
+        closed: { opacity: 0, y: 20 },
+        open: {
+            opacity: 1,
+            y: 0,
+            transition: { delay: 0.6, duration: 0.5 }
+        }
+    };
+
     return (
         <motion.div
             variants={{
@@ -170,14 +248,17 @@ export default function Navbar() {
             }}
             animate={hidden ? "hidden" : "visible"}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="box-border content-stretch flex gap-[200px] items-center justify-center px-[48px] py-[32px] w-full fixed top-0 left-0 z-10 bg-transparent"
+            className={`box-border flex items-center justify-between md:justify-center md:gap-[200px] px-6 md:px-[48px] py-6 md:py-[32px] w-full fixed top-0 left-0 z-50 bg-transparent transition-colors duration-300 ${isMenuOpen ? 'bg-transparent' : ''}`}
             data-name="Navbar"
             data-node-id="637:8"
         >
-            <Link to="/" className="font-de-valencia leading-[0] not-italic relative shrink-0 text-[#2d936c] text-[14px] text-nowrap no-underline" data-node-id="637:6">
+            {/* Logo */}
+            <Link to="/" className="font-de-valencia leading-[0] not-italic relative shrink-0 text-[#2d936c] text-[14px] text-nowrap no-underline z-50 md:text-[14px] text-xl" data-node-id="637:6">
                 <p className="leading-[normal] whitespace-pre">Harsh</p>
             </Link>
-            <div className="content-stretch flex font-montserrat-alternates gap-[24px] items-center leading-[0] not-italic relative shrink-0 text-[#01161e] text-[12px] text-nowrap relative" data-name="Menu Items" data-node-id="637:7">
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex content-stretch font-montserrat-alternates gap-[24px] items-center leading-[0] not-italic relative shrink-0 text-[#01161e] text-[12px] text-nowrap relative" data-name="Menu Items" data-node-id="637:7">
                 {/* Shared Underline Element */}
                 <div
                     ref={underlineRef}
@@ -198,6 +279,64 @@ export default function Navbar() {
                     </Link>
                 ))}
             </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden text-[#2d936c] z-50 focus:outline-none"
+                aria-label="Toggle Menu"
+            >
+                <motion.div
+                    animate={isMenuOpen ? "open" : "closed"}
+                    variants={{
+                        open: { rotate: 90, scale: 1.1 },
+                        closed: { rotate: 0, scale: 1 }
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                >
+                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </motion.div>
+            </button>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        variants={menuVariants}
+                        className="fixed inset-0 bg-[#01161e] z-40 flex flex-col items-center justify-center md:hidden origin-top"
+                    >
+                        <motion.div
+                            className="flex flex-col gap-6 items-center"
+                            variants={linkContainerVariants}
+                        >
+                            {navLinks.map((link) => (
+                                <div key={link.name} className="overflow-hidden"> {/* Masking Container */}
+                                    <motion.div variants={linkVariants}>
+                                        <Link
+                                            to={link.path}
+                                            className="font-de-valencia text-5xl text-[#e0e0e0] hover:text-[#2d936c] transition-colors duration-300 block py-1"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    </motion.div>
+                                </div>
+                            ))}
+                        </motion.div>
+
+                        {/* Decorative Elements for Mobile Menu */}
+                        <motion.div
+                            variants={systemTextVariants}
+                            className="absolute bottom-10 text-[#55aaaa]/50 font-consolas text-xs"
+                        >
+                            [ SYSTEM : ONLINE ]
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 }
