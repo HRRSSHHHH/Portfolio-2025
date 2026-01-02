@@ -63,9 +63,12 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         renderer.setClearColor(0xe0e0e0);
         mountPoint.appendChild(renderer.domElement);
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.enableZoom = false;
+        let controls: OrbitControls | null = null;
+        if (!isMobile) {
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.enableZoom = false;
+        }
 
         const onMouseMove = (event: MouseEvent) => {
             if (!isMobile) { // Disable mouse tracking on mobile
@@ -487,7 +490,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
                     points.geometry.attributes.position.needsUpdate = true;
                     points.geometry.attributes.color.needsUpdate = true; // IMPORTANT: Colors update needed for fade
 
-                    controls.update();
+                    if (controls) controls.update();
 
                     // Calculate Mouse Interaction Target (or Dummy)
                     let tMX = 99999, tMY = 99999, tMZ = 99999;
@@ -690,12 +693,12 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
             ScrollTrigger.killAll();
             if (mountPoint) mountPoint.removeChild(renderer.domElement);
             renderer.dispose();
-            controls.dispose();
+            if (controls) controls.dispose();
             scene.clear();
         };
     }, []);
 
-    return <div ref={mountRef} className="absolute inset-0 w-full h-full" />;
+    return <div ref={mountRef} className={`absolute inset-0 w-full h-full ${window.innerWidth < 768 ? 'pointer-events-none' : ''}`} />;
 };
 
 export default ParticleBackground;
