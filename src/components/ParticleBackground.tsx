@@ -16,6 +16,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
     const mountRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
     const groupRef = useRef<THREE.Group | null>(null);
+    const controlsRef = useRef<OrbitControls | null>(null);
     const animationFrameIdRef = useRef<number | undefined>(undefined);
 
     // Mouse interaction state
@@ -74,11 +75,16 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
 
         mountPoint.appendChild(renderer.domElement);
 
-        let controls: OrbitControls | null = null;
         if (!isMobile) {
-            controls = new OrbitControls(camera, renderer.domElement);
+            const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.enableZoom = false;
+            controlsRef.current = controls;
+        } else {
+            if (controlsRef.current) {
+                controlsRef.current.dispose();
+                controlsRef.current = null;
+            }
         }
 
         const onMouseMove = (event: MouseEvent) => {
@@ -501,7 +507,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
                     points.geometry.attributes.position.needsUpdate = true;
                     points.geometry.attributes.color.needsUpdate = true; // IMPORTANT: Colors update needed for fade
 
-                    if (controls) controls.update();
+                    if (controlsRef.current) controlsRef.current.update();
 
                     // Calculate Mouse Interaction Target (or Dummy)
                     let tMX = 99999, tMY = 99999, tMZ = 99999;
@@ -709,10 +715,13 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
             ScrollTrigger.killAll();
             if (mountPoint) mountPoint.removeChild(renderer.domElement);
             renderer.dispose();
-            if (controls) controls.dispose();
+            if (controlsRef.current) {
+                controlsRef.current.dispose();
+                controlsRef.current = null;
+            }
             scene.clear();
         };
-    }, []);
+    }, [isMobile]); // Re-run effect when isMobile changes to toggle controls and styles correctly
 
     return <div ref={mountRef} className={`absolute inset-0 w-full h-full ${isMobile ? 'pointer-events-none' : ''}`} />;
 };
