@@ -15,7 +15,7 @@ export default function Auro() {
     const productionRef = useRef<HTMLElement>(null);
 
     useLayoutEffect(() => {
-        let ctx = gsap.context(() => {
+        const ctx = gsap.context(() => {
 
             // 1. Hero Parallax
             gsap.to(".hero-img", {

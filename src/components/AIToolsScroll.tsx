@@ -18,8 +18,8 @@ export default function AIToolsScroll() {
     const slider = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
-        let ctx = gsap.context(() => {
-            let panels = gsap.utils.toArray(".ai-tool-item");
+        const ctx = gsap.context(() => {
+            const panels = gsap.utils.toArray(".ai-tool-item");
 
             gsap.to(panels, {
                 xPercent: -100 * (panels.length - 1),

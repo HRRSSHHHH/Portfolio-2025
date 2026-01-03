@@ -2,9 +2,7 @@ import { motion } from 'framer-motion';
 import BrandButton from './ui/BrandButton';
 import SystemLabel from './ui/SystemLabel';
 
-interface HeroProps { }
-
-export default function Hero({ }: HeroProps) {
+export default function Hero() {
 
     return (
         <motion.section

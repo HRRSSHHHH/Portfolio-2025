@@ -4,7 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionHeader from "./ui/SectionHeader";
 import BrandButton from "./ui/BrandButton";
 import SystemLabel from "./ui/SystemLabel";
-import { THEME } from "../constants/ThemeConstants";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,7 +14,7 @@ export default function Contact() {
     const [isSent, setIsSent] = useState(false);
 
     useLayoutEffect(() => {
-        let ctx = gsap.context(() => {
+        const ctx = gsap.context(() => {
             gsap.from(".reveal-item", {
                 y: 30,
                 opacity: 0,

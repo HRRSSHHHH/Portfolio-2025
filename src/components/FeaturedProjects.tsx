@@ -133,7 +133,21 @@ export default function FeaturedProjects() {
     );
 }
 
-const CardContent = ({ project, index, handleMouseEnter, handleMouseLeave, elemRef }: any) => {
+interface CardContentProps {
+    project: {
+        id: string;
+        title: string;
+        category: string;
+        description: string;
+        tags: string[];
+    };
+    index: number;
+    handleMouseEnter: (index: number) => void;
+    handleMouseLeave: (index: number) => void;
+    elemRef: React.RefObject<(HTMLElement | null)[]>;
+}
+
+const CardContent = ({ project, index, handleMouseEnter, handleMouseLeave, elemRef }: CardContentProps) => {
     return (
         <article
             ref={el => { elemRef.current[index] = el; }}

@@ -13,7 +13,7 @@ export default function Footer() {
   const [emailCopied, setEmailCopied] = useState(false);
 
   useLayoutEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: footerRef.current,
@@ -139,7 +139,7 @@ export default function Footer() {
         {/* BOTTOM BAR */}
         <div className="col-span-1 md:col-span-12 p-6 flex justify-between items-center relative">
           <div className="grid-cell-content font-consolas text-[10px] md:text-xs text-brand-white/40 uppercase tracking-widest">
-            © {new Date().getFullYear()} Harsh Sharma • Designed in Figma • Built with React
+            © {new Date().getFullYear()} Harsh Sharma • Designed in Figma • Built with React
           </div>
 
           <BrandButton
