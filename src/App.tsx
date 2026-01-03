@@ -58,7 +58,7 @@ function App() {
       <Navbar />
       <main>
         <AnimatePresence mode="wait">
-          <Suspense fallback={<div className="fixed inset-0 bg-[#2d936c] z-[50]" />}>
+          <Suspense fallback={<div className="fixed inset-0 bg-brand-primary z-[50]" />}>
             <Routes location={location} key={location.pathname}>
               <Route
                 path="/"

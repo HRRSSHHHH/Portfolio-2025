@@ -1,10 +1,10 @@
 import { useRef, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SystemLabel from "./ui/SystemLabel";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Project Data - Simplified for Minimalist Premium
 const projects = [
     {
         id: "01",
@@ -12,8 +12,6 @@ const projects = [
         category: "Data Visualization",
         description: "Transforming complex datasets into intuitive, human-centered dashboards.",
         tags: ["React", "D3.js"],
-        accent: "#2d936c",
-        // No patterns, just pure data
     },
     {
         id: "02",
@@ -21,7 +19,6 @@ const projects = [
         category: "EdTech Platform",
         description: "Adaptive learning algorithms that evolve with every student interaction.",
         tags: ["AI/ML", "UX Research"],
-        accent: "#2d936c",
     },
     {
         id: "03",
@@ -29,7 +26,6 @@ const projects = [
         category: "Generative Tools",
         description: "Empowering creators with AI-driven design partners.",
         tags: ["GenAI", "Product"],
-        accent: "#2d936c",
     }
 ];
 
@@ -76,32 +72,35 @@ export default function FeaturedProjects() {
 
     const handleMouseEnter = (index: number) => {
         gsap.to(cardsRef.current[index], {
-            y: -8, // Very subtle lift
+            y: -8,
             scale: 1.01,
             zIndex: 100,
             rotation: 0,
-            boxShadow: "0 20px 40px -20px rgba(0, 0, 0, 0.4)", // Darker, cleaner shadow
-            borderColor: "rgba(255, 255, 255, 0.2)", // Subtle white border on hover
+            boxShadow: "0 20px 40px -20px rgba(0, 0, 0, 0.4)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
             duration: 0.4,
             ease: "power2.out"
         });
     };
 
     const handleMouseLeave = (index: number) => {
+        const originalRotation = index === 0 ? 0 : (index === 1 ? -5 : 5);
+        const originalZIndex = index === 0 ? 10 : (index === 1 ? 20 : 30);
+
         gsap.to(cardsRef.current[index], {
             y: 0,
             scale: 1,
-            zIndex: index === 0 ? 10 : (index === 1 ? 20 : 30),
-            rotation: index === 0 ? 0 : (index === 1 ? -5 : 5),
+            zIndex: originalZIndex,
+            rotation: originalRotation,
             boxShadow: "none",
-            borderColor: "rgba(255, 255, 255, 0.05)", // Barely visible default border
+            borderColor: "rgba(255, 255, 255, 0.05)",
             duration: 0.4,
             ease: "power2.out"
         });
     };
 
     return (
-        <div id="featured-projects" ref={component} className="relative w-full text-[#01161e] font-montserrat-alternates" style={{ zIndex: 10 }}>
+        <div id="featured-projects" ref={component} className="relative w-full text-brand-dark font-montserrat-alternates" style={{ zIndex: 10 }}>
             <svg className="absolute w-0 h-0" aria-hidden="true">
                 <defs>
                     <filter id="sand-dissolve">
@@ -111,17 +110,14 @@ export default function FeaturedProjects() {
                 </defs>
             </svg>
 
-            <div ref={triggerRef} className="h-screen w-full flex flex-col justify-center items-center overflow-hidden py-20 relative"
-                style={{ backgroundColor: "rgba(224, 224, 224, 0.5)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
-
+            <div ref={triggerRef} className="h-screen w-full flex flex-col justify-center items-center overflow-hidden py-20 relative bg-brand-light/50 backdrop-blur-2xl">
                 <div ref={headerRef} className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none px-4 text-center" style={{ filter: "url(#sand-dissolve)" }}>
-                    <h2 className="text-[12vw] md:text-[8vw] font-thin tracking-tighter uppercase text-[#01161e] leading-[0.9] select-none break-words max-w-full" style={{ fontWeight: 100 }}>
-                        Featured <br /> <span className="text-[#2d936c]" style={{ fontWeight: 100 }}>Work</span>
+                    <h2 className="text-[12vw] md:text-[8vw] font-de-valencia tracking-tight uppercase text-brand-dark leading-[0.9] select-none break-words max-w-full">
+                        Featured <br /> <span className="text-brand-primary">Work</span>
                     </h2>
                 </div>
 
                 <div className="relative w-full max-w-7xl h-[65vh] flex justify-center items-center mt-10 perspective-[2000px]">
-                    {/* Further Reduced height: h-[350px] md:h-[450px] */}
                     <div ref={centerCard} className="absolute w-[300px] md:w-[380px] h-[350px] md:h-[450px] z-10">
                         <CardContent project={projects[0]} index={0} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} elemRef={cardsRef} />
                     </div>
@@ -144,17 +140,13 @@ const CardContent = ({ project, index, handleMouseEnter, handleMouseLeave, elemR
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave(index)}
             tabIndex={0}
-            className={`w-full h-full rounded-[1px] md:rounded-[4px] relative overflow-hidden bg-[#0c1f26] border border-white/5 flex flex-col justify-between group cursor-pointer`}
-            style={{
-                // Pure clean minimalist background - No complex gradients
-                background: "#0c1f26",
-            }}
+            className="w-full h-full rounded-sm relative overflow-hidden bg-brand-card border border-white/5 flex flex-col justify-between group cursor-pointer"
         >
-            {/* Top Bar: Ultra Clean Labels */}
+            {/* Top Bar */}
             <div className="relative z-10 flex justify-between items-start p-6 md:p-8">
                 <div className="flex flex-col gap-1">
-                    <span className="font-de-valencia text-xl md:text-2xl text-[#2d936c] opacity-80">0{index + 1}</span>
-                    <span className="text-[10px] tracking-[0.2em] uppercase text-white font-medium opacity-80">{project.category}</span>
+                    <span className="font-de-valencia text-xl md:text-2xl text-brand-primary">0{index + 1}</span>
+                    <SystemLabel className="text-brand-light/80">{project.category}</SystemLabel>
                 </div>
 
                 {/* Minimal Arrow */}
@@ -165,19 +157,19 @@ const CardContent = ({ project, index, handleMouseEnter, handleMouseLeave, elemR
                 </div>
             </div>
 
-            {/* Bottom Content: Type-Driven */}
+            {/* Bottom Content */}
             <div className="relative z-10 p-6 md:p-8 pt-0 mt-auto">
-                <h3 className="text-3xl md:text-4xl font-normal text-white mb-3 tracking-tight">
+                <h3 className="text-3xl md:text-4xl font-normal text-brand-white mb-3 tracking-tight font-de-valencia">
                     {project.title}
                 </h3>
-                <p className="text-xs md:text-sm text-gray-400 font-light leading-relaxed opacity-60 mb-6 line-clamp-3">
+                <p className="text-xs md:text-sm text-brand-light/60 font-light leading-relaxed mb-6 line-clamp-3 font-montserrat-alternates">
                     {project.description}
                 </p>
 
-                {/* Tech Stack - Plain Text to reduce noise */}
+                {/* Tech Stack */}
                 <div className="flex flex-wrap gap-3">
                     {project.tags.map((tag: string, i: number) => (
-                        <span key={i} className="text-[10px] uppercase tracking-wider text-white/40">
+                        <span key={i} className="text-[10px] uppercase tracking-wider text-brand-light/40 font-consolas">
                             {tag}
                         </span>
                     ))}
