@@ -97,7 +97,7 @@ export default function Projects() {
   };
 
   useLayoutEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       // Reveal Animation
       gsap.from(".reveal-item", {
         y: 50,

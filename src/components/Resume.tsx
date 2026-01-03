@@ -63,7 +63,7 @@ export default function Resume() {
     const lineRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
-        let ctx = gsap.context(() => {
+        const ctx = gsap.context(() => {
             // Reveal Animations
             gsap.from(".reveal-item", {
                 y: 30,

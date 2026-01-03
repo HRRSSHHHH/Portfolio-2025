@@ -130,7 +130,7 @@ const BrandButton: React.FC<BrandButtonProps> = ({
                 ].map((corner, i) => {
                     let sizeClass = "";
                     let borderClass = "";
-                    let transitionClass = "transition-all duration-500 ease-out";
+                    const transitionClass = "transition-all duration-500 ease-out";
                     let opacityClass = "opacity-100";
 
                     if (variant === 'primary') {

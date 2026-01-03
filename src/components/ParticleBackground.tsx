@@ -721,6 +721,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
             }
             scene.clear();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMobile]); // Re-run effect when isMobile changes to toggle controls and styles correctly
 
     return <div ref={mountRef} className={`absolute inset-0 w-full h-full ${isMobile ? 'pointer-events-none' : ''}`} />;
