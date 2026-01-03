@@ -11,26 +11,26 @@ export default function About() {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
-        let ctx: gsap.Context;
-        let isMounted = true;
+        const ctx = gsap.context(() => {
+            // Initial Reveal Animation
+            gsap.from(".reveal-item", {
+                opacity: 0,
+                y: 30,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
 
-        document.fonts.ready.then(() => {
-            if (!isMounted) return;
-
-            ctx = gsap.context(() => {
-                // Initial Reveal Animation
-                gsap.from(".reveal-item", {
+            // Strategies Section (card-reveal animation)
+            // Using fromTo and clearProps to resolve CSS transition conflicts
+            gsap.fromTo(".card-reveal",
+                {
                     opacity: 0,
-                    y: 30,
-                    duration: 1,
-                    stagger: 0.2,
-                    ease: "power3.out"
-                });
-
-                // Strategies Section (card-reveal animation)
-                gsap.from(".card-reveal", {
-                    opacity: 0,
-                    y: 50,
+                    y: 50
+                },
+                {
+                    opacity: 1,
+                    y: 0,
                     duration: 1,
                     stagger: 0.2,
                     ease: "power3.out",
@@ -38,16 +38,19 @@ export default function About() {
                         trigger: ".strategies-section",
                         start: "top 70%",
                         toggleActions: "play none none none"
+                    },
+                    onComplete: () => {
+                        // After animation, clear props to avoid conflict with hover transitions
+                        gsap.set(".card-reveal", { clearProps: "opacity,transform" });
                     }
-                });
+                }
+            );
 
-            }, containerRef);
-        });
+        }, containerRef);
 
-        return () => {
-            isMounted = false;
-            ctx?.revert();
-        };
+        ScrollTrigger.refresh();
+
+        return () => ctx.revert();
     }, []);
 
     return (
@@ -93,7 +96,7 @@ export default function About() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
                         {/* Strategy 1 */}
-                        <div className="relative group p-10 border border-brand-dark/10 hover:border-brand-primary transition-all duration-500 hover:shadow-2xl bg-white/40 backdrop-blur-sm card-reveal">
+                        <div className="relative group p-10 border border-brand-dark/10 hover:border-brand-primary transition-colors duration-500 hover:shadow-2xl bg-white/40 backdrop-blur-sm card-reveal">
                             <div className="flex flex-col h-full justify-between">
                                 <div>
                                     <SystemLabel>01</SystemLabel>
@@ -114,7 +117,7 @@ export default function About() {
                         </div>
 
                         {/* Strategy 2 */}
-                        <div className="relative group p-10 border border-brand-dark/10 hover:border-brand-primary transition-all duration-500 hover:shadow-2xl bg-white/40 backdrop-blur-sm card-reveal">
+                        <div className="relative group p-10 border border-brand-dark/10 hover:border-brand-primary transition-colors duration-500 hover:shadow-2xl bg-white/40 backdrop-blur-sm card-reveal">
                             <div className="flex flex-col h-full justify-between">
                                 <div>
                                     <SystemLabel>02</SystemLabel>
