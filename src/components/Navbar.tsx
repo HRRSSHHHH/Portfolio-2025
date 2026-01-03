@@ -240,6 +240,9 @@ export default function Navbar() {
         }
     };
 
+    const isLightPage = ['/', '/about', '/skills', '/resume', '/contact', '/projects'].includes(pathname);
+    const navTextColor = isLightPage ? 'text-brand-dark' : 'text-brand-white';
+
     return (
         <motion.div
             variants={{
@@ -253,16 +256,16 @@ export default function Navbar() {
             data-node-id="637:8"
         >
             {/* Logo */}
-            <Link to="/" className="font-de-valencia leading-[0] not-italic relative shrink-0 text-[#2d936c] text-[14px] text-nowrap no-underline z-50 md:text-[14px] text-xl" data-node-id="637:6">
+            <Link to="/" className={`font-de-valencia leading-[0] not-italic relative shrink-0 ${isLightPage ? 'text-brand-primary' : 'text-brand-white'} text-[14px] text-nowrap no-underline z-50 md:text-[14px] text-xl`} data-node-id="637:6">
                 <p className="leading-[normal] whitespace-pre">Harsh</p>
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex content-stretch font-montserrat-alternates gap-[24px] items-center leading-[0] not-italic relative shrink-0 text-[#01161e] text-[12px] text-nowrap relative" data-name="Menu Items" data-node-id="637:7">
+            <div className={`hidden md:flex content-stretch font-montserrat-alternates gap-[24px] items-center leading-[0] not-italic relative shrink-0 ${navTextColor} text-[12px] text-nowrap relative`} data-name="Menu Items" data-node-id="637:7">
                 {/* Shared Underline Element */}
                 <div
                     ref={underlineRef}
-                    className="absolute bottom-0 left-0 h-[2px] bg-[#2d936c] pointer-events-none opacity-0"
+                    className="absolute bottom-0 left-0 h-[2px] bg-brand-primary pointer-events-none opacity-0"
                     style={{ width: 0 }}
                 />
 
@@ -270,7 +273,7 @@ export default function Navbar() {
                     <Link
                         key={link.name}
                         to={link.path}
-                        className="relative shrink-0 no-underline text-[#01161e] px-2 py-1"
+                        className={`relative shrink-0 no-underline ${navTextColor} px-2 py-1`}
                         ref={(el) => { navItemsRef.current[index] = el; }}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
@@ -283,7 +286,7 @@ export default function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden text-[#2d936c] z-50 focus:outline-none"
+                className={`md:hidden z-50 p-2 ${isMenuOpen ? 'text-brand-white' : navTextColor} focus:outline-none`}
                 aria-label="Toggle Menu"
             >
                 <motion.div
@@ -306,7 +309,7 @@ export default function Navbar() {
                         animate="open"
                         exit="closed"
                         variants={menuVariants}
-                        className="fixed inset-0 bg-[#01161e] z-40 flex flex-col items-center justify-center md:hidden origin-top"
+                        className="fixed inset-0 bg-brand-dark z-40 flex flex-col items-center justify-center md:hidden origin-top"
                     >
                         <motion.div
                             className="flex flex-col gap-6 items-center"
@@ -317,7 +320,7 @@ export default function Navbar() {
                                     <motion.div variants={linkVariants}>
                                         <Link
                                             to={link.path}
-                                            className="font-de-valencia text-5xl text-[#e0e0e0] hover:text-[#2d936c] transition-colors duration-300 block py-1"
+                                            className="font-de-valencia text-5xl text-brand-light hover:text-brand-primary transition-colors duration-300 block py-1"
                                             onClick={() => setIsMenuOpen(false)}
                                         >
                                             {link.name}
@@ -330,7 +333,7 @@ export default function Navbar() {
                         {/* Decorative Elements for Mobile Menu */}
                         <motion.div
                             variants={systemTextVariants}
-                            className="absolute bottom-10 text-[#55aaaa]/50 font-consolas text-xs"
+                            className="absolute bottom-10 text-brand-secondary/50 font-consolas text-xs"
                         >
                             [ SYSTEM : ONLINE ]
                         </motion.div>

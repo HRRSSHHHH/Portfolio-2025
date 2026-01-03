@@ -45,13 +45,13 @@ export default function TechStackMarquee() {
     }, []);
 
     return (
-        <div ref={wrapperRef} className="relative w-full py-8 bg-[#e0e0e0] overflow-hidden border-b border-[#01161e]/10">
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#e0e0e0] to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#e0e0e0] to-transparent z-10 pointer-events-none"></div>
+        <div ref={wrapperRef} className="relative w-full py-8 bg-brand-light overflow-hidden border-b border-brand-dark/10">
+            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-brand-light to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-brand-light to-transparent z-10 pointer-events-none"></div>
 
             <div ref={marqueeRef} className="flex whitespace-nowrap gap-16 px-8 items-center">
                 {techStack.map((tech, i) => (
-                    <span key={i} className="text-4xl md:text-5xl font-de-valencia text-[#01161e]/20 uppercase tracking-tight select-none hover:text-[#2d936c] transition-colors duration-300 cursor-default">
+                    <span key={i} className="text-4xl md:text-5xl font-de-valencia text-brand-dark/20 uppercase tracking-tight select-none hover:text-brand-primary transition-colors duration-300 cursor-default">
                         {tech}
                     </span>
                 ))}

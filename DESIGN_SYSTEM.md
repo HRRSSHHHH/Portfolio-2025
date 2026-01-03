@@ -1,61 +1,124 @@
-# Design System: Intelligence-Driven Minimalism
+# Design System: Intelligence-Driven Minimalism (v1.0)
 
-> [!NOTE]
-> This document defines the definitive design language for the portfolio. It is based on a deep audit of the codebase, capturing the "Dark-to-Light" duality and "Strategic Intelligence" vibe.
+This architectural specification defines the visual identity, structural logic, and interactive soul of the portfolio. It is designed to be a definitive manual for all future development.
 
-## Core Philosophy
-**Vibe:** Confidently Future-Proof.
-**Descriptor:** Intelligence-Driven Minimalism / Precision-Humanism.
-**Structure:** Bimodal Experience.
-1.  **The Interface (Dark Mode):** landing screen, hero, immersion. (Hero, ParticleBackground)
-2.  **The Blueprint (Light Mode):** documentation, content, clarity. (Skills, Resume, Contact, Marquee)
-3.  **The Depth (Dark Teal):** specific feature showcases. (Featured Projects, AI Tools)
+---
 
-## Color Palette (The Tech-Organic Mix)
+## 1. Design Philosophy: "The Bimodal Strategy"
 
-| Token Name | Hex Value | Usage |
-| :--- | :--- | :--- |
-| **Brand Primary** | `#2d936c` | "Terminal Green" - Active intelligence, status, focus, cursor interactions. |
-| **Brand Dark** | `#01161e` | Deep Navy/Black - Hero background, text color in Light Mode. |
-| **Brand Light** | `#e0e0e0` | Clean Light Gray - **Primary background for inner pages** (Skills, Resume, Contact). |
-| **Brand Card** | `#0c1f26` | Dark Teal - Featured Projects background, AI Tools specific sections. |
-| **Brand Secondary** | `#55aaaa` | Muted Teal/Cyan - Cilia, interactive highlights. |
-| **Brand White** | `#ffffff` | Pure white for text on Dark/Card backgrounds. |
+The system is built on a sharp duality between **immersion** and **documentation**. Every section must strictly belong to one of these two "Spaces":
 
-## Typography (The Hierarchy of Intent)
+### A. The Interface (Dark Mode)
+*   **Narrative:** The "Final Product," the high-tech output.
+*   **Visuals:** Low-key lighting, neon highlights, deep teal surfaces, cinematic transitions.
+*   **Sections:** `Hero`, `FeaturedProjects`, `Experience`, `AIToolsScroll`.
 
-### 1. Headline: `De Valencia`
-*   **Usage:** Massive, high-impact headlines (10vw-12vw).
-*   **Context:** Hero titles ("Designing Intelligence"), Section Headers ("Dimensions", "The Trajectory"), Background Watermarks (Contact).
-*   **Weight:** Often used with `font-thin` or specific `100` weight for elegance.
+### B. The Blueprint (Light Mode)
+*   **Narrative:** The "Working Files," the logic, and the process.
+*   **Visuals:** High-key lighting, technical noise, archival grey, rigid grid patterns.
+*   **Sections:** `About`, `Skills`, `Resume`, `Contact`, `Projects` (Listing).
 
-### 2. Functional Metadata: `Consolas`
-*   **Usage:** "System Specs" style headers.
-*   **Pattern:** `[ Label ] ----- [ Value ]`. Used for tagging skills, dates, and "The Blueprint" section headers.
-*   **Context:** Technical labeling, not body copy.
+---
 
-### 3. Body / UI: `Montserrat Alternates`
-*   **Usage:** Navigation, project descriptions, button text, form inputs.
-*   **Context:** The human readable layer.
+## 2. Color Specification (Chromatic Logic)
 
-## Layout Principles
-*   **The Manifesto Header:** Inner pages (`Projects`, `Skills`, `Resume`) almost always start with a large `De Valencia` headline paired with a `Consolas` sub-header group.
-*   **Whitespace:** Significant vertical spacing. Margins of `mb-32` or `mb-40` are standard.
-*   **The Blueprint Grid:** Strict column layouts (e.g., ID | Context | Case Study in `Projects.tsx`).
+All colors are controlled via Tailwind `brand` tokens and CSS variables.
 
-## Interaction & Motion
-*   **Entry:** `GSAP ScrollTrigger` with `stagger: 0.1` is the standard rhythm.
-*   **Transition:** `ParticleTransition.tsx` covers the screen with brand colors (`#2d936c`, `#222`, `#888`) on route changes.
-*   **Hover States:**
-    *   **Lift:** `-translate-y-2` on cards (Projects).
-    *   **Fill:** Buttons or steps fill with green/white on hover (Resume, Skills).
-    *   **Scale:** Subtle image scaling.
-*   **HUD Elements:**
-    *   **Restricted:** Confined to the Hero (Corner guides) and specific "System Spec" dividers. NOT used as general chrome borders on content cards.
+| Token | Hex | RGB | Semantic Role |
+| :--- | :--- | :--- | :--- |
+| **Brand Primary** | `#2d936c` | `45, 147, 108` | **The Signal:** Active intelligence, focus, successful states. |
+| **Brand Dark** | `#01161e` | `1, 22, 30` | **The Void:** Primary dark background, light mode typography. |
+| **Brand Light** | `#e0e0e0` | `224, 224, 224` | **The Canvas:** Blueprint background, dark mode subtle text. |
+| **Brand Card** | `#0c1f26` | `12, 31, 38` | **The Surface:** Interface containers, submerged logic. |
+| **Brand Secondary**| `#55aaaa` | `85, 170, 170` | **The Aura:** Ambient cues, cilia, secondary highlights. |
+| **Brand White** | `#ffffff` | `255, 255, 255` | **The Clarity:** Primary light typography over dark surfaces. |
 
-## Implementation Guidelines
-*   **Tailwind Config:** MUST support both Dark and Light contexts.
-    *   `bg-brand-dark` vs `bg-brand-light`.
-    *   `text-brand-light` (on dark) vs `text-brand-dark` (on light).
-*   **CSS Variables:** Ensure `--color-brand-primary` is available for Canvas/WebGL (Particles).
-*   **Refactoring:** Migrating hardcoded hex values to these tokens is the priority to ensure this consistency is maintained.
+---
+
+## 3. Typography Matrix (Hierarchy of Intent)
+
+The typography is optimized for a "System Specs" aesthetic. Use these precise mappings for all new development.
+
+### 3.1 Headline System (`De Valencia`)
+| Role | Size (TW) | Leading | Tracking | Weight | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Display (Hero)** | `text-7xl` to `text-[12vw]` | `tight` | `tighter` | `100` | Used for massive background watermarks. |
+| **Section Title** | `text-4xl md:text-7xl` | `tight` | `tight` | `normal` | Primary headings in `SectionHeader`. |
+| **Sub-Heading** | `text-3xl` | `snug` | `normal` | `normal` | Project titles within cards. |
+
+### 3.2 Metadata System (`Consolas`)
+| Role | Size (TW) | Leading | Tracking | Weight | Format |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **System Tag** | `text-xs` | `none` | `widest` (0.2em) | `normal` | Uppercase. Used in `SystemLabel`. |
+| **UI Action** | `text-xs` | `none` | `widest` | `normal` | Used in `BrandButton`. |
+| **Breadcrumb** | `text-[10px]` | `none` | `wider` | `normal` | Smallest system labels (e.g., Footer). |
+
+### 3.3 Body System (`Montserrat Alternates`)
+| Role | Size (TW) | Leading | Tracking | Weight | Color Rule |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Primary Body** | `text-lg` | `relaxed` | `normal` | `300` (Light) | Light grey on dark; Dark navy on light. |
+| **UI/Nav** | `text-sm` | `none` | `normal` | `400` (Reg) | High-contrast readability. |
+| **Caption** | `text-xs` | `normal` | `wide` | `200` (ExLight)| Tertiary information. |
+
+---
+
+## 4. Atomic System Components
+
+### 4.1 SectionHeader
+- **Pattern:** `System Metadata` (Consolas) + `Display Title` (De Valencia) + `Body Desc` (Montserrat).
+- **Rule:** Labels always come with a `w-12 h-[1px]` brand-primary prefix/suffix.
+
+### 4.2 BrandButton
+- **Hierarchy:**
+    - **Primary:** The Gold Standard.
+        - **Theme Light (on white):** Rest: `border-brand-dark/10`. Hover: Green fill, dark text, dark corners.
+        - **Theme Dark (on dark):** Rest: `border-brand-primary/20`. Hover: White fill, dark text, green corners.
+        - **Interaction:** Full boundary border at rest "collapses" into precision corners on hover.
+    - **Secondary:** "The Logic Bridge".
+        - **Interaction:** Inverse of Primary. 4 corners (`w-3 h-3`) at rest are connected by a faint dotted line. On hover, corners expand to meet in the middle (`w-full h-full`), forming a solid boundary.
+        - **Fill:** Consistent `bg-brand-primary/10` tint across all themes to preserve the "Intelligence-Driven" aesthetic.
+        - **Typography:** Theme-aware text on hover: `brand-dark` on light theme, and `brand-white` / `brand-light` on dark theme for maximized accessibility.
+    - **Tertiary:** "The Viewport" (Ultra-Minimal / Ultra-Tight).
+        - **Interaction:** Pure text at 100% opacity. No fill, no border, no data stream, no cursor glow.
+        - **Hover:** 4 tiny precision L-corners (`w-2 h-2`) snap **ultra-tightly** (within 4-8px) around the text.
+        - **Typography:** Theme-aware text color for brand consistency. No text-glitch effect.
+- **Anatomy:** Strictly `font-consolas`, `text-xs`, `uppercase`, `tracking-[0.2em]`. No rounded corners.
+- **Interactions (Data Stream):**
+    - Scrolling hex data background (accelerates on hover).
+    - Cursor-tracking radial glow (`brand-primary/40`).
+    - Multi-channel RGB text glitch effect on hover.
+    - Precision schematic corner markers appear on hover.
+- **Feedback:** Tactile spring scaling (`active:scale-[0.98]`) on click.
+
+### 4.3 SystemLabel
+- **Pattern:** `[ VALUE ]`
+- **Default:** `text-brand-primary` borderless text.
+- **Pill:** Solid background with `text-brand-dark`.
+
+---
+
+## 5. Layout & Interactive Logic
+
+### 5.1 The "Blueprint" Grid
+- **Background:** `.blueprint-bg` (Light mode only).
+- **Pattern:** `radial-gradient(var(--color-brand-dark) 0.5px, transparent 0.5px)` @ `30px 30px`.
+- **Purpose:** Reinforces the "Documentation/Archival" theme.
+
+### 5.2 Motion Standards
+- **Global Stagger:** `0.1s` (GSAP).
+- **Transition Duration:** `0.3s` to `0.8s` (Power2.out).
+- **Interactive repulsion:** Particles react to mouse within `150px` radius.
+
+---
+
+## 6. Implementation Guardrails
+
+1. **Colors:** ZERO hardcoded hex values in JSX. Use `brand-` utility classes or `ThemeConstants.ts`.
+2. **Spacing:** Mandatory `mb-16` to `mb-32` between layout sections.
+3. **Hierarchy:** Headlines MUST use `De Valencia`. All data MUST use `Consolas`.
+4. **Theme:** Use the `.blueprint-bg` utility for all process-heavy pages.
+
+---
+
+> [!CAUTION]
+> Avoid "softness." No large border-radii, no fuzzy shadows, and no generic `sans-serif` falls. Every pixel must look intentional and data-driven.
