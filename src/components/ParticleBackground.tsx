@@ -62,7 +62,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ containerRef })
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(initialWidth, initialHeight);
-        renderer.setClearColor(0xe0e0e0);
+        renderer.setClearColor(0xF0EEE9);
 
         // Explicitly handle touch-action to ensure scrolling works on mobile
         if (isMobile) {
