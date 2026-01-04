@@ -28,7 +28,7 @@ All colors are controlled via Tailwind `brand` tokens and CSS variables.
 | :--- | :--- | :--- | :--- |
 | **Brand Primary** | `#2d936c` | `45, 147, 108` | **The Signal:** Active intelligence, focus, successful states. |
 | **Brand Dark** | `#01161e` | `1, 22, 30` | **The Void:** Primary dark background, light mode typography. |
-| **Brand Light** | `#e0e0e0` | `224, 224, 224` | **The Canvas:** Blueprint background, dark mode subtle text. |
+| **Brand Light** | `#F0EEE9` | `240, 238, 233` | **The Cloud Dancer:** Serene blueprint background, archival logic. |
 | **Brand Card** | `#0c1f26` | `12, 31, 38` | **The Surface:** Interface containers, submerged logic. |
 | **Brand Secondary**| `#55aaaa` | `85, 170, 170` | **The Aura:** Ambient cues, cilia, secondary highlights. |
 | **Brand White** | `#ffffff` | `255, 255, 255` | **The Clarity:** Primary light typography over dark surfaces. |
